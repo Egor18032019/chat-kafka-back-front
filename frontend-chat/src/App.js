@@ -27,7 +27,7 @@ const App = () => {
     chatAPI.sendMessage(user.username, msgText).then(res => {
       console.log('Sent', res);
     }).catch(err => {
-      console.log('Error Occured while sending message to api');
+      console.log('Error Occurred while sending message to api');
     })
   }
 
