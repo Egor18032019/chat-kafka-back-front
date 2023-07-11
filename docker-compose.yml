@@ -1,10 +1,11 @@
 version: '2'
 services:
   client-backend:
-    image: client:0.0.4
+    image: client:0.0.6
     build:
       context: /backend-chat
       dockerfile: Dockerfile
+#      указываем расположение Dockerfile, он у нас располагается в той же папке, что и docker-compose.yml
     ports:
       - 8080:8080
     depends_on:
@@ -19,7 +20,6 @@ services:
     ports:
       - 22181:2181
 
-
   kafka-1:
     image: confluentinc/cp-kafka:latest
     depends_on:
@@ -27,6 +27,7 @@ services:
 
     ports:
       - 29092:29092
+
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181
