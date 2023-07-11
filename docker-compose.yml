@@ -1,5 +1,16 @@
 version: '2'
 services:
+  client-backend:
+    image: client:0.0.4
+    build:
+      context: /backend-chat
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    depends_on:
+      - zookeeper-1
+      - kafka-1
+
   zookeeper-1:
     image: confluentinc/cp-zookeeper:latest
     environment:
