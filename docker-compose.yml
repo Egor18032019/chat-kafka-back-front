@@ -1,16 +1,33 @@
-version: '2'
+version: '3.9'
 services:
   client-backend:
-    image: client:0.0.6
+    image: client:0.0.7
     build:
       context: /backend-chat
       dockerfile: Dockerfile
-#      указываем расположение Dockerfile, он у нас располагается в той же папке, что и docker-compose.yml
+#      указываем расположение Dockerfile
     ports:
-      - 8080:8080
+      - "8080:8080"
     depends_on:
       - zookeeper-1
       - kafka-1
+#    networks:
+#      - frontend
+
+  client-frontend:
+    image: front:0.0.6
+    build:
+      context: /frontend-chat
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    stdin_open: true
+    tty: true # для открытия терминала после ст
+    depends_on:
+      - client-backend
+#    networks:
+#      - frontend
+
 
   zookeeper-1:
     image: confluentinc/cp-zookeeper:latest
@@ -35,3 +52,7 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+# Networks to be created to facilitate communication between containers
+#networks:
+#  frontend:

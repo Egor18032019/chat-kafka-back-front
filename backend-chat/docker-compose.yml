@@ -2,11 +2,15 @@ version: "3.9"
 
 services:
   client-backend:
-    image: client:0.0.4
+    image: client:0.0.9
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - 8080:8080
-    restart: always
+#    networks:
+#      - kafkanet
+#networks:
+#    kafkanet:
+#    restart: always
 
