@@ -8,14 +8,14 @@ import chatAPI from './services/chatapi';
 import { randomColor } from './utils/common';
 
 
-const SOCKET_URL = 'http://localhost:8080/ws-chat/';
+const SOCKET_URL = 'http://127.0.0.1:8080/ws-chat/';
 
 const App = () => {
   const [messages, setMessages] = useState([])
   const [user, setUser] = useState(null)
 
   let onConnected = () => {
-    console.log("Connected!!")
+    console.log("Connected on SockJsClient !!! ")
   }
 
   let onMessageReceived = (msg) => {

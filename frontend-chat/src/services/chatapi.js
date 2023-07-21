@@ -1,7 +1,7 @@
 import Axios from "axios";
 
 const api = Axios.create({
-    baseURL: '/api/',
+    baseURL: "/api"
 });
 
 const chatAPI = {
@@ -15,7 +15,12 @@ const chatAPI = {
             sender: username,
             content: text
         }
-        return api.post(`send`, msg);
+
+        return api.post("/send", msg
+            // или добавить в package.json
+            // ,
+            // "proxy": "http://localhost:8080"
+        )
     }
 }
 

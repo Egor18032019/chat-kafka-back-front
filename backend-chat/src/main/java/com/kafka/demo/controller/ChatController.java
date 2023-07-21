@@ -8,6 +8,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +22,8 @@ public class ChatController {
     private KafkaTemplate<String, Message> kafkaTemplate;
 
     @PostMapping(value = "/api/send", consumes = "application/json", produces = "application/json")
-    public void sendMessage(@RequestBody Message message) {
+    @CrossOrigin(origins = "http://127.0.0.1:3000/", maxAge = 3600, allowCredentials = "true" , originPatterns = "*")
+    public void sendMesscage(@RequestBody Message message) {
         message.setTimestamp(LocalDateTime.now().toString());
         try {
             //Отправка сообщения
