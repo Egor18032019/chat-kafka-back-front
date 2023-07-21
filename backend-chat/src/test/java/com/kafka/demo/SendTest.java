@@ -13,19 +13,25 @@ import static com.kafka.demo.utils.KafkaConstants.KAFKA_TOPIC;
 public class SendTest {
     @BeforeAll
     public static void init() throws ExecutionException, InterruptedException, TimeoutException {
-        KafkaBase.start(List.of(new NewTopic( KAFKA_TOPIC, 1, (short) 1)));
-    }
-    @Test
-    void isAppWork() {
-
-
-
+        KafkaBase.start(List.of(new NewTopic(KAFKA_TOPIC, 1, (short) 1)));
     }
 
     @Test
-    void handlerTest() {
+    void isKafkaWork() {
+        // Cоздаем продюсора он отправляет в кафку и потом консьюмеров ловим
 
+    }
 
+    @Test
+    void isFrontWork() {
+// Селениум и проверка подгрузился ли фронт ?
+        // или GET http://localhost:8080/ и получили ответ 200 ??
+
+    }
+
+    @Test
+    void isBackWork() {
+        // Пост запрос на адрес ?
 
     }
 }
