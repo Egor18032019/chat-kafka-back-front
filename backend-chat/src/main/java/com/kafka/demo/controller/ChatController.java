@@ -1,9 +1,10 @@
 package com.kafka.demo.controller;
 
 import com.kafka.demo.model.Message;
+import com.kafka.demo.model.store.GarbageRepository;
 import com.kafka.demo.utils.KafkaConstants;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -13,24 +14,43 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+
 @RestController
 public class ChatController {
     //TODO вынести все адреса в утилиты
-    @Autowired
-    private KafkaTemplate<String, Message> kafkaTemplate;
+    private final KafkaTemplate<String, Message> kafkaTemplate;
+    private final GarbageRepository garbageRepository;
+
+    public ChatController(KafkaTemplate<String, Message> kafkaTemplate, GarbageRepository garbageRepository) {
+        this.kafkaTemplate = kafkaTemplate;
+        this.garbageRepository = garbageRepository;
+    }
 
     @PostMapping(value = "/api/send", consumes = "application/json", produces = "application/json")
-    public void sendMessage(@RequestBody Message message) {
+    public void sendMesscage(@RequestBody Message message) {
         message.setTimestamp(LocalDateTime.now().toString());
+        CompletableFuture<SendResult<String, Message>> future = kafkaTemplate.send(KafkaConstants.KAFKA_TOPIC, message.getSender(), message);
         try {
-            //Отправка сообщения
-            kafkaTemplate.send(KafkaConstants.KAFKA_TOPIC, message).get();
-        } catch (InterruptedException | ExecutionException e) {
+            future.get();
+             //TODO в этом случаи нам нужны ошибки или ошибки вместе с message  в бд складывать ?
+        } catch (InterruptedException e) {
+            //если текущий поток был прерван
+            garbageRepository.add(message);
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            //если future завершено в исключительных случаях
+            garbageRepository.add(message);
+            throw new RuntimeException(e);
+        } catch (CancellationException e) {
+            //если future было отменено
+            garbageRepository.add(message);
             throw new RuntimeException(e);
         }
-        //TODO CompletableFuture<SendResult<String, String>> future = kafkaTemplate.send("msg", msgId, msg);
-        //
+
         //        kafkaTemplate.flush();
         //TODO отдавать ответ в виде ResponseBody
 
@@ -49,7 +69,7 @@ public class ChatController {
     public Message addUser(@Payload Message message,
                            SimpMessageHeaderAccessor headerAccessor) {
         // Add user in web socket session
-        headerAccessor.getSessionAttributes().put("username", message.getSender());
+        Objects.requireNonNull(headerAccessor.getSessionAttributes()).put("username", message.getSender());
         return message;
     }
 

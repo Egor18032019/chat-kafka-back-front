@@ -8,8 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MessageListener {
-    final
-    SimpMessagingTemplate template;
+    final SimpMessagingTemplate template;
 
     public MessageListener(SimpMessagingTemplate template) {
         this.template = template;

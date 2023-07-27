@@ -1,32 +1,30 @@
 version: '3.9'
 services:
   client-backend:
-    image: client:0.0.7
+    #    2 цифра - для общего, 3 для частности
+    image: client:0.1.2
     build:
       context: /backend-chat
       dockerfile: Dockerfile
-#      указываем расположение Dockerfile
+    #      указываем расположение Dockerfile
     ports:
       - "8080:8080"
     depends_on:
       - zookeeper-1
       - kafka-1
-#    networks:
-#      - frontend
 
-  client-frontend:
-    image: front:0.0.6
-    build:
-      context: /frontend-chat
-      dockerfile: Dockerfile
-    ports:
-      - '3000:3000'
-    stdin_open: true
-    tty: true # для открытия терминала после ст
-    depends_on:
-      - client-backend
-#    networks:
-#      - frontend
+  #  client-frontend:
+  #    image: front:0.0.5
+  #    build:
+  #      context: /frontend-chat
+  #      dockerfile: Dockerfile
+  #    ports:
+  #      - '3000:3000'
+  #    stdin_open: true
+  #    tty: true # для открытия терминала после ст
+  #    depends_on:
+  #      - client-backend
+  #
 
 
   zookeeper-1:
@@ -53,6 +51,15 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
-# Networks to be created to facilitate communication between containers
-#networks:
-#  frontend:
+  kafka-ui:
+    container_name: kafka-ui
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - "8090:8080"
+#      внешний:внутренний
+    depends_on:
+    - kafka-1
+    environment:
+     KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-1:9092
+     KAFKA_CLUSTERS_0_METRICS_PORT: 9997
+     DYNAMIC_CONFIG_ENABLED: 'true'

@@ -3,6 +3,8 @@ WORKDIR /app
 #- создаем директорию app внутри слоя образа.
 COPY . /app/.
 #- копируем все наши папки с текущего проекта в папку app в слое образа.
+# TODO перед сборкой копировать файлы с папки build в static
+#COPY ./frontend-chat/build /app/src/main/resoures/static
 RUN mvn -f /app/pom.xml clean package -D  maven.test.skip=true
 # - запускаем maven, который билдит наш проект и получаем jar-ник.
 FROM eclipse-temurin:17-jre-alpine

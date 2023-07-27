@@ -35,6 +35,9 @@ public class ProducerConfiguration {
         configurations.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KafkaConstants.KAFKA_BROKER);
         configurations.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configurations.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+//        configurations.put(ProducerConfig.BATCH_SIZE_CONFIG, 10);
+//        configurations.put(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, 10);
+//        configurations.put(ProducerConfig.ACKS_CONFIG, 1/all);
         return configurations;
     }
 

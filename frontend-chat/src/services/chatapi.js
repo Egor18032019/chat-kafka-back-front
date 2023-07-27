@@ -1,21 +1,22 @@
 import Axios from "axios";
-
+import {BASE_URL_API, BASE_URL_SEND} from "../utils/const";
 const api = Axios.create({
-    baseURL: '/api/',
+    baseURL: BASE_URL_API
 });
 
 const chatAPI = {
-    getMessages: (groupId) => {
-        console.log('Calling get messages from API ' + groupId);
-        return api.get(`messages/${groupId}`);
-    },
+    // getMessages: (groupId) => {
+    //     return api.get(`messages/${groupId}`);
+    // },
 
     sendMessage: (username, text) => {
+        console.log('sendMessage ' + text);
         let msg = {
             sender: username,
             content: text
         }
-        return api.post(`send`, msg);
+
+        return api.post(BASE_URL_SEND, msg)
     }
 }
 
