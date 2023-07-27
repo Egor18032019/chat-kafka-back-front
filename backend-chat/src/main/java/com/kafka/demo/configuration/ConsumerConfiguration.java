@@ -17,7 +17,7 @@ import java.util.Map;
 
 @EnableKafka
 @Configuration
-public class ListenerConfiguration {
+public class ConsumerConfiguration {
     @Bean
     ConcurrentKafkaListenerContainerFactory<String, Message> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, Message> factory = new ConcurrentKafkaListenerContainerFactory<>();
@@ -40,6 +40,9 @@ public class ListenerConfiguration {
         configurations.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         configurations.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
         configurations.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
+//        configurations.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "обработка на стороне консумера");
+//        configurations.put(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG,ждать ?);
+
         // «earliest», чтобы получить все значения в очереди с самого начала.
         // «latest», чтобы получить только самое последнее значение.
         return configurations;

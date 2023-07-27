@@ -19,7 +19,7 @@ public class KafkaBase {
     private static final Logger log = LoggerFactory.getLogger(KafkaBase.class);
 
     private static final KafkaContainer kafka =
-            new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.0.0"));
+            new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:latest"));
     private static String bootstrapServers;
 
     public static void start(Collection<NewTopic> topics)
