@@ -36,14 +36,13 @@ public class ChatController {
         CompletableFuture<SendResult<String, Message>> future = kafkaTemplate.send(KafkaConstants.KAFKA_TOPIC, message.getSender(), message);
         try {
             future.get();
-             //TODO в этом случаи нам нужны ошибки или ошибки вместе с message  в бд складывать ?
+            //TODO в этом случаи нам нужны ошибки или ошибки вместе с message  в бд складывать ?
         } catch (InterruptedException e) {
             //если текущий поток был прерван
-            garbageRepository.add(message);
             throw new RuntimeException(e);
         } catch (ExecutionException e) {
-            //если future завершено в исключительных случаях
             garbageRepository.add(message);
+            //если future завершено в исключительных случаях
             throw new RuntimeException(e);
         } catch (CancellationException e) {
             //если future было отменено

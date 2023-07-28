@@ -6,10 +6,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Component;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -19,25 +20,32 @@ import java.util.Optional;
  */
 public class GarbageRepository {
 
-    private static final List<Message> GARBAGE_ENTITIES = new ArrayList<>();
+    private static final List<byte[]> GARBAGE_ENTITIES = new ArrayList<>();
 
     public Long countAll() {
         return (long) GARBAGE_ENTITIES.size();
     }
 
-    public List<Message> findAll() {
+    public List<byte[]> findAll() {
         return GARBAGE_ENTITIES;
     }
 
-    public Optional<Message> findBySender(String sender) {
 
-        return GARBAGE_ENTITIES
-                .stream()
-                .filter(goodDto -> Objects.equals(goodDto.getSender(), sender))
-                .findFirst();
+    public void add(byte[] data) {
+        GARBAGE_ENTITIES.add(data);
     }
 
     public void add(Message entity) {
-        GARBAGE_ENTITIES.add(entity);
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+            ObjectOutputStream out = null;
+            out = new ObjectOutputStream(bos);
+            out.writeObject(entity);
+            out.flush();
+            byte[] arrBytes = bos.toByteArray();
+            GARBAGE_ENTITIES.add(arrBytes);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        // ignore close exception
     }
 }

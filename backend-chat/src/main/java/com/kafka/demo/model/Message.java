@@ -20,6 +20,10 @@ public class Message {
         this.content = content;
     }
 
+    public void setTimestampToLong(Long timestamp) {
+        this.timestamp = String.valueOf(timestamp);
+    }
+
     @Override
     public String toString() {
         return "Message{" +
